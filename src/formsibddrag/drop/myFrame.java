@@ -1,6 +1,11 @@
 package formsibddrag.drop;
 
+//import java.sql.Connection;
+//import java.sql.PreparedStatement;
+//import java.sql.ResultSet;
+//import java.sql.Statement;
 import java.awt.Component;
+import java.sql.DriverManager;
 
 public class myFrame extends javax.swing.JFrame {
     
@@ -10,6 +15,15 @@ public class myFrame extends javax.swing.JFrame {
         setTitle("APLIKASI SEDERHANA");
         setExtendedState(MAXIMIZED_BOTH);
     }
+    
+//    private void KoneksiDB() {
+//        try {
+//            Class.forName("com.mysql.jdbc.Driver");
+//            con = DriverManager.getConnection("jdbc:mysql://localhost/fly_studio", "root", "");
+//        } catch (Exception e) {
+//            System.out.println("Koneksi gagal \n" + e); 
+//        }
+//    }
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents

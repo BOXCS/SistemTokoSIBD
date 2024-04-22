@@ -50,9 +50,9 @@ public class Supplier extends javax.swing.JFrame {
         jLabel6 = new javax.swing.JLabel();
         alamat = new javax.swing.JTextField();
         jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        cmdEdit = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
+        cmdDelete = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         tabelsupplier = new javax.swing.JTable();
         jMenuBar1 = new javax.swing.JMenuBar();
@@ -97,11 +97,21 @@ public class Supplier extends javax.swing.JFrame {
             }
         });
 
-        jButton2.setText("EDIT");
+        cmdEdit.setText("EDIT");
+        cmdEdit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cmdEditActionPerformed(evt);
+            }
+        });
 
         jButton3.setText("CLEAR");
 
-        jButton4.setText("DELETE");
+        cmdDelete.setText("DELETE");
+        cmdDelete.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cmdDeleteActionPerformed(evt);
+            }
+        });
 
         tabelsupplier.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -114,6 +124,11 @@ public class Supplier extends javax.swing.JFrame {
                 "No", "Kode Supplier", "Nama Perusahaan", "Barang di Jual", "No Tlp", "Alamat"
             }
         ));
+        tabelsupplier.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tabelsupplierMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(tabelsupplier);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -143,11 +158,11 @@ public class Supplier extends javax.swing.JFrame {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(29, 29, 29)
-                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(cmdEdit, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(29, 29, 29)
                         .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(29, 29, 29)
-                        .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(cmdDelete, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(137, Short.MAX_VALUE))
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(65, 65, 65)
@@ -180,9 +195,9 @@ public class Supplier extends javax.swing.JFrame {
                     .addComponent(jLabel4)
                     .addComponent(barjul, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButton1)
-                    .addComponent(jButton2)
+                    .addComponent(cmdEdit)
                     .addComponent(jButton3)
-                    .addComponent(jButton4))
+                    .addComponent(cmdDelete))
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 376, Short.MAX_VALUE)
                 .addContainerGap())
@@ -268,6 +283,60 @@ public class Supplier extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jButton1ActionPerformed
 
+    private void cmdEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmdEditActionPerformed
+        ks = String.valueOf(kd_sup.getText());
+        np = String.valueOf(nm_p.getText());
+        brg = String.valueOf(barjul.getText());
+        tlp = String.valueOf(no_tlp.getText());
+        almt = String.valueOf(alamat.getText());
+
+        try {
+            KoneksiDB(); // Memanggil metode untuk melakukan koneksi database
+            sql = "UPDATE supplier SET nama_toko=?, barang_dijual=?, no_tlp=?, alamat=? WHERE kd_supplier=?";
+            PreparedStatement pst = con.prepareStatement(sql);
+            pst.setString(1, np);
+            pst.setString(2, brg);
+            pst.setString(3, tlp);
+            pst.setString(4, almt);
+            pst.setString(5, ks);
+            pst.executeUpdate();
+
+            Clear(); // Membersihkan teks field
+            ShowData(null); // Menampilkan kembali data pada tabel
+            JOptionPane.showMessageDialog(null, "Data Berhasil Diupdate");
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "ERROR \n" + e.getMessage());
+        }
+    }//GEN-LAST:event_cmdEditActionPerformed
+
+    private void tabelsupplierMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tabelsupplierMouseClicked
+        int i = tabelsupplier.getSelectedRow();
+        DefaultTableModel model = (DefaultTableModel) tabelsupplier.getModel();
+        kd_sup.setText(model.getValueAt(i, 1).toString());
+        nm_p.setText(model.getValueAt(i, 2).toString());
+        barjul.setText(model.getValueAt(i, 3).toString());
+        no_tlp.setText(model.getValueAt(i, 4).toString());
+        alamat.setText(model.getValueAt(i, 5).toString());
+    }//GEN-LAST:event_tabelsupplierMouseClicked
+
+    private void cmdDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmdDeleteActionPerformed
+        ks = String.valueOf(kd_sup.getText());
+
+        try {
+            KoneksiDB(); // Memanggil metode untuk melakukan koneksi database
+            sql = "DELETE FROM supplier WHERE kd_supplier=?";
+            PreparedStatement pst = con.prepareStatement(sql);
+            pst.setString(1, ks);
+            pst.executeUpdate();
+
+            Clear(); // Membersihkan teks field
+            ShowData(null); // Menampilkan kembali data pada tabel
+            JOptionPane.showMessageDialog(null, "Data Berhasil Dihapus");
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "ERROR \n" + e.getMessage());
+        }
+    }//GEN-LAST:event_cmdDeleteActionPerformed
+
     private void Clear() {
         kd_sup.setText("");
         nm_p.setText("");
@@ -343,10 +412,10 @@ public class Supplier extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField alamat;
     private javax.swing.JTextField barjul;
+    private javax.swing.JButton cmdDelete;
+    private javax.swing.JButton cmdEdit;
     private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
